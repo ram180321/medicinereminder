@@ -268,7 +268,7 @@ app.post("/api/twilio/send", async (req, res) => {
 app.use(express.static(path.join(__dirname, "frontend")));
 
 // For SPAs: send index.html for unknown routes (comment out if unwanted)
-app.get("/:catchAll(*)", (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "frontend/index.html"));
 });
 
