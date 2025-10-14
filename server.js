@@ -10,8 +10,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // Models & scheduler (assumes models/ and scheduler.js are at repo root)
-import Medicine from "./models/medicines.js";
-import User from "./models/user.js";
+import Medicine from "./models/Medicine.js";
+import User from "./models/User.js";
 import reminderScheduler from "./Backend/scheduler.js";
 
 const __filename = fileURLToPath(import.meta.url);
