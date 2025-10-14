@@ -31,6 +31,11 @@ mongoose
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Error:", err.message));
 
+  app.use(cors({
+  origin: "*", // or your frontend domain like "https://medicinereminder-4vsg.onrender.com"
+  methods: ["GET","POST","PUT","DELETE"]
+}));
+
 // ---------- AUTH / HELPERS ----------
 function authMiddleware(role) {
   return (req, res, next) => {
