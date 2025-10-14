@@ -1,7 +1,7 @@
 // scheduler.js
 import cron from "node-cron";
-import Medicine from "./models/medicine.js";
-import User from "./models/user.js";
+import Medicine from "../models/medicine.js";
+import User from "../models/user.js";
 import twilio from "twilio";
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
