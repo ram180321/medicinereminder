@@ -265,11 +265,11 @@ app.post("/api/twilio/send", async (req, res) => {
 });
 
 // ---------- Serve static frontend (if you have public/ folder) ----------
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "frontend")));
 
 // For SPAs: send index.html for unknown routes (comment out if unwanted)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/index.html"));
+  res.sendFile(path.join(__dirname, "frontend/index.html"));
 });
 
 // ---------- Start server & scheduler ----------
