@@ -241,14 +241,14 @@
         async function fetchAdminDashboardData() {
             const token = localStorage.getItem('token');
             try {
-                const usersResponse = await fetch(`${API_BASE_URL}/admin/users`, {
+                const usersResponse = await fetch(`${BASE_URL}/admin/users`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const users = await usersResponse.json();
                 if (!usersResponse.ok) throw new Error(users.message || "Failed to fetch users.");
                 
-                const medicinesCountResponse = await fetch(`${API_BASE_URL}/admin/medicines/count`, {
+                const medicinesCountResponse = await fetch(`${BASE_URL}/admin/medicines/count`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -296,7 +296,7 @@
             }
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+                const response = await fetch(`${BASE_URL}/admin/users/${userId}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });

@@ -511,7 +511,7 @@
         async function fetchMedicines() {
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`${API_BASE_URL}/medicines`, {
+                const response = await fetch(`${BASE_URL}/medicines`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -595,7 +595,7 @@
 
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`${API_BASE_URL}/medicines`, {
+                const response = await fetch(`${BASE_URL}/medicines`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ name, dose, time, recurrence, days, stock })
@@ -630,7 +630,7 @@
 
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`${API_BASE_URL}/medicines/${id}`, {
+                const response = await fetch(`${BASE_URL}/medicines/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ name: newName, dose: newDose, time: newTime, stock: stockValue })
@@ -653,7 +653,7 @@
             }
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`${API_BASE_URL}/medicines/${id}`, {
+                const response = await fetch(`${BASE_URL}/medicines/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -671,7 +671,7 @@
         async function markAsTaken(id) {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${API_BASE_URL}/medicines/${id}/taken`, {
+            const res = await fetch(`${BASE_URL}/medicines/${id}/taken`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

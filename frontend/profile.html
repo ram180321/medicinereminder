@@ -189,7 +189,7 @@
         async function fetchProfile() {
             const token = localStorage.getItem('token');
             try {
-                const res = await fetch(`${API_BASE_URL}/profile`, {
+                const res = await fetch(`${BASE_URL}/profile`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -238,7 +238,7 @@
             }
 
             try {
-                const res = await fetch(`${API_BASE_URL}/profile`, {
+                const res = await fetch(`${BASE_URL}/profile`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ name: newName, phoneNumber: newPhoneNumber, age: newAge, sex: newSex })
@@ -261,7 +261,7 @@
             if (newPassword.length < 6) { showToast("Password must be at least 6 characters long."); return; }
             const token = localStorage.getItem('token');
             try {
-                const res = await fetch(`${API_BASE_URL}/profile/password`, {
+                const res = await fetch(`${BASE_URL}/profile/password`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ newPassword })
@@ -280,7 +280,7 @@
             if (!confirm("Are you sure you want to permanently delete your account? This action cannot be undone.")) return;
             const token = localStorage.getItem('token');
             try {
-                const res = await fetch(`${API_BASE_URL}/profile`, {
+                const res = await fetch(`${BASE_URL}/profile`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });

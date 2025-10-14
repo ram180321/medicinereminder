@@ -224,7 +224,7 @@
         async function fetchDashboardData() {
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`${API_BASE_URL}/medicines`, {
+                const response = await fetch(`${BASE_URL}/medicines`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
