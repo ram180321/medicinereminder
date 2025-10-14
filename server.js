@@ -32,7 +32,7 @@ mongoose
   .catch((err) => console.error("❌ MongoDB Error:", err.message));
 
   app.use(cors({
-  origin: "*", // or your frontend domain like "https://medicinereminder-4vsg.onrender.com"
+  origin: "https://medicinereminder-4vsg.onrender.com",
   methods: ["GET","POST","PUT","DELETE"]
 }));
 
