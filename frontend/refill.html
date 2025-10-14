@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>DoseMate - Refill Alerts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic Reset and Font Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f7fa, #fff3e0);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background-color: #263238;
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            z-index: 200;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            background: linear-gradient(to right, #4fc3f7, #81c784);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            background-clip: text;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            margin: 15px 0;
+            font-size: 18px;
+            transition: 0.3s ease;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            color: #81c784;
+        }
+
+        /* Main Content Area */
+        .main {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .header-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .no-medicines {
+            font-style: italic;
+            color: #666;
+        }
+
+        /* Medicine Card Styling */
+        .medicine-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .medicine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .medicine-card h3 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+
+        .medicine-card p {
+            color: #555;
+            font-size: 15px;
+            margin: 0;
+        }
+
+        /* Stock Status Styling */
+        .stock-status {
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 5px;
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .stock-status.low-stock {
+            background-color: #e74c3c;
+        }
+
+        .stock-status.high-stock {
+            background-color: #2ecc71;
+        }
+
+        /* Refill Button Styling */
+        .refill-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            margin-top: 15px;
+            width: fit-content;
+        }
+
+        .refill-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 15px 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            .sidebar .logo {
+                display: none;
+            }
+
+            .sidebar a {
+                margin: 0 5px;
+                font-size: 16px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">DoseMate 💊</div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="medicines.html">Your Medicines</a>
+        <a href="reminders.html">Reminders</a>
+        <a href="refill.html">Refill Alerts</a>
+        <a href="profile.html">Profile</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
+
+    <div class="main">
+        <div class="header-info">
+            <h2>Refill Alerts</h2>
+            <p>Your medicines with low stock are listed below.</p>
+        </div>
+        <div id="refill-list">
+            <p class="no-medicines">Loading refill alerts...</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        window.onload = () => {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            if (!token || role !== 'user') {
+                window.location.href = "index.html";
+            } else {
+                fetchLowStockMedicines();
+            }
+        };
+
+        function showMessage(message) {
+            alert(message);
+        }
+
+        async function fetchLowStockMedicines() {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`${API_BASE_URL}/medicines`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const medicines = await response.json();
+                if (!response.ok) {
+                    throw new Error(medicines.message || "Failed to fetch medicines.");
+                }
+                const lowStockMedicines = medicines.filter(med => med.stock >= 1 && med.stock <= 5);
+                displayLowStockMedicines(lowStockMedicines);
+            } catch (error) {
+                showMessage(error.message);
+            }
+        }
+
+        function displayLowStockMedicines(medData) {
+            const refillList = document.getElementById("refill-list");
+            refillList.innerHTML = '';
+
+            if (medData.length === 0) {
+                refillList.innerHTML = "<p class='no-medicines'>You have no medicines with low stock. Great job!</p>";
+                return;
+            }
+
+            medData.forEach(med => {
+                const card = document.createElement("div");
+                card.className = "medicine-card";
+
+                let recurrenceText = med.recurrence === "specific" && med.days.length > 0 ? `on ${med.days.join(', ')}` : med.recurrence === "specific" ? "No days selected" : "Daily";
+                
+                let stockStatus = `<span class="stock-status low-stock">Low Stock: ${med.stock}</span>`;
+
+                card.innerHTML = `
+                    <h3>${med.name}</h3>
+                    <p><strong>Dose:</strong> ${med.dose}</p>
+                    <p><strong>Time:</strong> ${med.time}</p>
+                    <p><strong>Recurrence:</strong> ${recurrenceText}</p>
+                    <p>${stockStatus}</p>
+                    <button class="refill-btn" onclick="refillMedicine('${med._id}', ${med.stock})">Refill</button>
+                `;
+                refillList.appendChild(card);
+            });
+        }
+        
+        async function refillMedicine(id, currentStock) {
+            const newStock = currentStock + 30; // Refill by 30 units
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/medicines/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ stock: newStock })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Failed to refill medicine.");
+                }
+                
+                showMessage("Medicine refilled successfully!");
+                fetchLowStockMedicines(); // Refresh the list
+            } catch (error) {
+                console.error("Error refilling medicine:", error);
+                showMessage(error.message);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
