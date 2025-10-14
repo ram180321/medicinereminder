@@ -210,98 +210,112 @@
     </div>
     
     <script>
-    const BASE_URL = "https://medicinereminder-4vsg.onrender.com/api";
+const BASE_URL = "https://medicinereminder-4vsg.onrender.com/api";
 
-        window.onload = async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = "index.html"; // Redirect to login
-            } else {
-                await fetchDashboardData();
+window.onload = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = "index.html"; // Redirect to login
+    } else {
+        await fetchDashboardData();
+    }
+};
+
+// ✅ Updated fetchDashboardData with proper error handling
+async function fetchDashboardData() {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await fetch(`${BASE_URL}/medicines`, {
+            method: 'GET',
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
-        };
+        });
 
-        async function fetchDashboardData() {
-            const token = localStorage.getItem('token');
+        if (!response.ok) {
+            let errorData;
             try {
-                const response = await fetch(`${BASE_URL}/medicines`, {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const medicines = await response.json();
-                if (!response.ok) throw new Error(medicines.message || "Failed to fetch data.");
-
-                updateStats(medicines);
-                renderCalendar(medicines);
-            } catch (error) {
-                console.error("Error fetching dashboard data:", error);
-                alert("Error fetching dashboard data: " + error.message);
+                errorData = await response.json();
+            } catch {
+                errorData = { message: response.statusText };
             }
+            throw new Error(errorData.message || "Failed to fetch data.");
         }
 
-        function updateStats(medicines) {
-            const totalMedicines = medicines.length;
-            const lowStockCount = medicines.filter(med => med.stock >= 1 && med.stock <= 5).length;
-            const remindersToday = medicines.filter(med => {
-                const now = new Date();
-                const currentDay = now.toLocaleString('en-US', { weekday: 'long' }).toLowerCase().substring(0, 3);
-                return med.recurrence === 'daily' || med.days.includes(currentDay);
-            }).length;
+        const medicines = await response.json();
+        updateStats(medicines);
+        renderCalendar(medicines);
 
-            document.getElementById('totalMedicines').textContent = totalMedicines;
-            document.getElementById('lowStockAlerts').textContent = lowStockCount;
-            document.getElementById('remindersToday').textContent = remindersToday;
+    } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        alert("Error fetching dashboard data: " + error.message);
+    }
+}
+
+function updateStats(medicines) {
+    const totalMedicines = medicines.length;
+    const lowStockCount = medicines.filter(med => med.stock >= 1 && med.stock <= 5).length;
+    const remindersToday = medicines.filter(med => {
+        const now = new Date();
+        const currentDay = now.toLocaleString('en-US', { weekday: 'short' }).toLowerCase();
+        return med.recurrence === 'daily' || med.days.includes(currentDay);
+    }).length;
+
+    document.getElementById('totalMedicines').textContent = totalMedicines;
+    document.getElementById('lowStockAlerts').textContent = lowStockCount;
+    document.getElementById('remindersToday').textContent = remindersToday;
+}
+
+function renderCalendar(medicines) {
+    const calendarEl = document.getElementById('calendar');
+    calendarEl.innerHTML = '';
+    const daysOfWeek = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    const fullDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    
+    const now = new Date();
+    const currentDayIndex = now.getDay();
+
+    for (let i = 0; i < 7; i++) {
+        const dayIndex = (currentDayIndex + i) % 7;
+        const dayCode = daysOfWeek[dayIndex];
+        const dayName = fullDays[dayIndex];
+
+        const dayCard = document.createElement('div');
+        dayCard.className = 'calendar-day';
+
+        const dayLabel = document.createElement('h4');
+        dayLabel.textContent = dayName.substring(0, 3);
+        dayCard.appendChild(dayLabel);
+
+        const dayReminders = medicines.filter(med => {
+            return med.recurrence === 'daily' || med.days.includes(dayCode);
+        });
+
+        if (dayReminders.length > 0) {
+            dayReminders.forEach(med => {
+                const reminderPill = document.createElement('div');
+                reminderPill.className = 'reminder-pill';
+                reminderPill.textContent = `${med.name} at ${med.time}`;
+                dayCard.appendChild(reminderPill);
+            });
+        } else {
+            const noReminder = document.createElement('p');
+            noReminder.textContent = 'No reminders';
+            noReminder.style.fontSize = '12px';
+            noReminder.style.color = '#999';
+            dayCard.appendChild(noReminder);
         }
 
-        function renderCalendar(medicines) {
-            const calendarEl = document.getElementById('calendar');
-            calendarEl.innerHTML = '';
-            const daysOfWeek = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-            const fullDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            
-            const now = new Date();
-            const currentDayIndex = now.getDay();
+        calendarEl.appendChild(dayCard);
+    }
+}
 
-            for (let i = 0; i < 7; i++) {
-                const dayIndex = (currentDayIndex + i) % 7;
-                const dayCode = daysOfWeek[dayIndex];
-                const dayName = fullDays[dayIndex];
-
-                const dayCard = document.createElement('div');
-                dayCard.className = 'calendar-day';
-
-                const dayLabel = document.createElement('h4');
-                dayLabel.textContent = dayName.substring(0, 3);
-                dayCard.appendChild(dayLabel);
-
-                const dayReminders = medicines.filter(med => {
-                    return med.recurrence === 'daily' || med.days.includes(dayCode);
-                });
-
-                if (dayReminders.length > 0) {
-                    dayReminders.forEach(med => {
-                        const reminderPill = document.createElement('div');
-                        reminderPill.className = 'reminder-pill';
-                        reminderPill.textContent = `${med.name} at ${med.time}`;
-                        dayCard.appendChild(reminderPill);
-                    });
-                } else {
-                    const noReminder = document.createElement('p');
-                    noReminder.textContent = 'No reminders';
-                    noReminder.style.fontSize = '12px';
-                    noReminder.style.color = '#999';
-                    dayCard.appendChild(noReminder);
-                }
-
-                calendarEl.appendChild(dayCard);
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            window.location.href = "index.html";
-        }
-    </script>
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    window.location.href = "index.html";
+}
+</script>
 </body>
 </html>

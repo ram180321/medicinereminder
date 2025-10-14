@@ -222,97 +222,59 @@
     </div>
     
     <script>
-    const BASE_URL = "https://medicinereminder-4vsg.onrender.com/api";
+const BASE_URL = "https://medicinereminder-4vsg.onrender.com/api";
 
-        window.onload = async () => {
-            const token = localStorage.getItem('token');
-            const role = localStorage.getItem('role');
-            if (!token || role !== 'admin') {
-                window.location.href = "index.html"; // Redirect to login
-            } else {
-                await fetchAdminDashboardData();
-            }
-        };
+window.onload = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = "index.html"; // Redirect to login if no token
+    } else {
+        await fetchAdminDashboardData();
+    }
+};
 
-        function showMessage(message) {
-            alert(message);
-        }
+async function fetchAdminDashboardData() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
 
-        async function fetchAdminDashboardData() {
-            const token = localStorage.getItem('token');
-            try {
-                const usersResponse = await fetch(`${BASE_URL}/admin/users`, {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const users = await usersResponse.json();
-                if (!usersResponse.ok) throw new Error(users.message || "Failed to fetch users.");
-                
-                const medicinesCountResponse = await fetch(`${BASE_URL}/admin/medicines/count`, {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const medicineCountData = await medicinesCountResponse.json();
-                if (!medicinesCountResponse.ok) throw new Error(medicineCountData.message || "Failed to fetch medicine count.");
-                
-                updateStats(users.length, medicineCountData.count);
-                renderUserTable(users);
-            } catch (error) {
-                console.error("Error fetching admin data:", error);
-                showMessage("Error fetching admin dashboard data: " + error.message);
+    try {
+        // Fetch all users
+        const usersResponse = await fetch(`${BASE_URL}/admin/users`, {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
-        }
+        });
+        const users = await usersResponse.json();
+        if (!usersResponse.ok) throw new Error(users.message || "Failed to fetch users.");
 
-        function updateStats(userCount, medicineCount) {
-            document.getElementById('totalUsers').textContent = userCount;
-            document.getElementById('totalMedicines').textContent = medicineCount;
-        }
-        
-        function renderUserTable(users) {
-            const userTableBody = document.querySelector('#userTable tbody');
-            userTableBody.innerHTML = '';
-            
-            if (users.length === 0) {
-                document.getElementById('no-users-message').style.display = 'block';
-                document.getElementById('userTable').style.display = 'none';
-                return;
+        // Fetch total medicines count
+        const medicinesCountResponse = await fetch(`${BASE_URL}/admin/medicines/count`, {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
+        });
+        const medicineCountData = await medicinesCountResponse.json();
+        if (!medicinesCountResponse.ok) throw new Error(medicineCountData.message || "Failed to fetch medicine count.");
 
-            users.forEach(user => {
-                const row = userTableBody.insertRow();
-                row.innerHTML = `
-                    <td>${user.email}</td>
-                    <td>${user.role}</td>
-                    <td>
-                        <button class="action-button" onclick="deleteUser('${user._id}')">Delete</button>
-                    </td>
-                `;
-            });
-        }
-        
-        async function deleteUser(userId) {
-            if (!confirm("Are you sure you want to delete this user?")) {
-                return;
-            }
-            const token = localStorage.getItem('token');
-            try {
-                const response = await fetch(`${BASE_URL}/admin/users/${userId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (!response.ok) throw new Error("Failed to delete user.");
-                showMessage("User deleted successfully!");
-                fetchAdminDashboardData();
-            } catch (error) {
-                showMessage("Error deleting user: " + error.message);
-            }
-        }
-        
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            window.location.href = "index.html";
-        }
-    </script>
+        // Update UI (existing functions)
+        updateStats(users.length, medicineCountData.count);
+        renderUserTable(users);
+
+    } catch (error) {
+        console.error("Error fetching admin data:", error);
+        alert("Error fetching admin dashboard data: " + error.message);
+    }
+}
+
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    window.location.href = "index.html";
+}
+</script>
 </body>
 </html>
