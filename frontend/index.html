@@ -47,7 +47,11 @@
     h2 {
       text-align: center;
       margin-bottom: 10px;
-      color: #333;
+      font-size: 26px;
+      background: linear-gradient(90deg, #007bff, #00c6ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     p {
@@ -113,14 +117,6 @@
       transform: translateY(0);
     }
 
-    .title {
-      text-align: center;
-      font-size: 24px;
-      font-weight: 600;
-      color: #007bff;
-      margin-bottom: 25px;
-    }
-
     @media (max-width: 768px) {
       .wrapper {
         flex-direction: column;
@@ -181,14 +177,23 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Login failed");
 
+        // ✅ Role Verification
+        if (roleType === "user" && data.role !== "user") {
+          throw new Error("This is an admin account. Please login using the Admin panel.");
+        }
+
+        if (roleType === "admin" && data.role !== "admin") {
+          throw new Error("This is a user account. Please login using the User panel.");
+        }
+
+        // ✅ Save Token and Role
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.role);
-
         showToast("Login successful!");
 
-        // Redirect based on roleType or API role
+        // ✅ Redirect Properly
         setTimeout(() => {
-          if (roleType === "admin" || data.role === "admin") {
+          if (data.role === "admin") {
             window.location.href = "admin.html";
           } else {
             window.location.href = "dashboard.html";
