@@ -6,7 +6,6 @@
   <title>DoseMate - Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    /* Basic Reset and Font Styles */
     * {
       margin: 0;
       padding: 0;
@@ -14,29 +13,35 @@
       font-family: "Poppins", sans-serif;
     }
 
-    /* General Body Styles */
     body {
-      --bg-color: linear-gradient(135deg, #e0f7fa, #fff3e0);
-      background: var(--bg-color);
+      background: linear-gradient(135deg, #e0f7fa, #fff3e0);
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* Container for Login/Signup */
+    .wrapper {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+      width: 90%;
+      max-width: 900px;
+    }
+
     .container {
-      width: 100%;
-      max-width: 420px;
+      flex: 1 1 380px;
       background: #fff;
       padding: 40px;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transition: opacity 0.5s ease;
+      transition: transform 0.3s ease;
     }
 
-    .container.hidden {
-      display: none;
+    .container:hover {
+      transform: translateY(-5px);
     }
 
     h2 {
@@ -52,7 +57,6 @@
       margin-bottom: 20px;
     }
 
-    /* ✅ Refined Input and Select styles */
     input[type="email"],
     input[type="password"] {
       width: 100%;
@@ -64,12 +68,12 @@
       transition: all 0.3s ease;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
-    
+
     input[type="email"]:focus,
     input[type="password"]:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-        outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+      outline: none;
     }
 
     button {
@@ -84,24 +88,9 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-    
+
     button:hover {
       background-color: #0056b3;
-    }
-
-    .link {
-      text-align: center;
-      margin-top: 10px;
-    }
-    
-    .link a {
-      color: #007bff;
-      text-decoration: none;
-      font-size: 14px;
-    }
-    
-    .link a:hover {
-      text-decoration: underline;
     }
 
     .toast {
@@ -118,32 +107,46 @@
       transform: translateY(-20px);
       z-index: 9999;
     }
-    
+
     .toast.show {
       opacity: 1;
       transform: translateY(0);
     }
+
+    .title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      color: #007bff;
+      margin-bottom: 25px;
+    }
+
+    @media (max-width: 768px) {
+      .wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container" id="loginView">
-    <h2>DoseMate 💊</h2>
-    <p>"Stay healthy. Stay consistent."</p>
-    <input type="email" id="email" placeholder="Enter Email" />
-    <input type="password" id="password" placeholder="Enter Password" />
-    <button onclick="login()">Login</button>
-    <div class="link">
-      <p>Don't have an account? <a href="#" onclick="showSignup()">Create one</a></p>
+  <div class="wrapper">
+    <!-- User Login Box -->
+    <div class="container" id="userLoginBox">
+      <h2>User Login 💊</h2>
+      <p>"Stay healthy. Stay consistent."</p>
+      <input type="email" id="userEmail" placeholder="Enter User Email" />
+      <input type="password" id="userPassword" placeholder="Enter Password" />
+      <button onclick="login('user')">Login as User</button>
     </div>
-  </div>
 
-  <div class="container hidden" id="signupView">
-    <h2>Create Account</h2>
-    <input type="email" id="signupEmail" placeholder="Email" />
-    <input type="password" id="signupPassword" placeholder="Password" />
-    <button onclick="signup()">Sign Up</button>
-    <div class="link">
-      <p>Already have an account? <a href="#" onclick="showLogin()">Back to login</a></p>
+    <!-- Admin Login Box -->
+    <div class="container" id="adminLoginBox">
+      <h2>Admin Login 🔑</h2>
+      <p>"Manage users and reminders efficiently."</p>
+      <input type="email" id="adminEmail" placeholder="Enter Admin Email" />
+      <input type="password" id="adminPassword" placeholder="Enter Password" />
+      <button onclick="login('admin')">Login as Admin</button>
     </div>
   </div>
 
@@ -151,58 +154,50 @@
 
   <script>
     const BASE_URL = "https://medicinereminder-4vsg.onrender.com/api";
-    
+
     function showToast(message, duration = 3000) {
       const toast = document.getElementById('toast');
       toast.textContent = message;
       toast.classList.add('show');
-      setTimeout(() => { toast.classList.remove('show'); }, duration);
+      setTimeout(() => toast.classList.remove('show'), duration);
     }
 
-    async function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    async function login(roleType) {
+      const email = document.getElementById(roleType === 'user' ? 'userEmail' : 'adminEmail').value;
+      const password = document.getElementById(roleType === 'user' ? 'userPassword' : 'adminPassword').value;
+
+      if (!email || !password) {
+        showToast("Please fill in all fields!");
+        return;
+      }
+
       try {
         const res = await fetch(`${BASE_URL}/auth/login`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password })
         });
+
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Login failed");
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('role', data.role);
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+
         showToast("Login successful!");
-        if (data.role === "admin") {
-          window.location.href = "admin.html";
-        } else {
-          window.location.href = "dashboard.html";
-        }
-      } catch (error) { showToast(error.message); }
-    }
 
-    async function signup() {
-      const email = document.getElementById('signupEmail').value;
-      const password = document.getElementById('signupPassword').value;
-      try {
-        const res = await fetch(`${BASE_URL}/auth/register`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Signup failed");
-        showToast("Account created successfully!");
-        showLogin();
-      } catch (error) { showToast(error.message); }
-    }
+        // Redirect based on roleType or API role
+        setTimeout(() => {
+          if (roleType === "admin" || data.role === "admin") {
+            window.location.href = "admin.html";
+          } else {
+            window.location.href = "dashboard.html";
+          }
+        }, 1000);
 
-    function showLogin() {
-      document.getElementById('loginView').classList.remove('hidden');
-      document.getElementById('signupView').classList.add('hidden');
-    }
-
-    function showSignup() {
-      document.getElementById('signupView').classList.remove('hidden');
-      document.getElementById('loginView').classList.add('hidden');
+      } catch (error) {
+        showToast(error.message);
+      }
     }
   </script>
 </body>
