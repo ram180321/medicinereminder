@@ -1,209 +1,456 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DoseMate - Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DoseMate — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
+    :root{
+      --blue-1:#007bff;
+      --blue-2:#00c6ff;
+      --glass: rgba(255,255,255,0.7);
+      --muted:#6b7280;
+      --card-shadow: 0 10px 30px rgba(8,15,30,0.08);
+      --rounded:18px;
+    }
+    *{box-sizing:border-box;font-family:"Poppins",sans-serif}
+    html,body{height:100%;margin:0}
+    body{
+      background: linear-gradient(180deg,#f7fbff 0%, #edf9ff 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
     }
 
-    body {
-      background: linear-gradient(135deg, #e0f7fa, #fff3e0);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    /* Layout */
+    .shell{
+      width:100%;
+      max-width:1100px;
+      height:720px;
+      border-radius:22px;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns:1fr 430px;
+      box-shadow: 0 20px 60px rgba(2,6,23,0.12);
+      background: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.85));
+      backdrop-filter: blur(6px);
     }
 
-    .wrapper {
-      display: flex;
-      gap: 30px;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: stretch;
-      width: 90%;
-      max-width: 900px;
+    /* Left branding */
+    .left {
+      padding:48px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:20px;
+      background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+      color:white;
+      position:relative;
     }
-
-    .container {
-      flex: 1 1 380px;
-      background: #fff;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
+    .logo {
+      font-weight:700;
+      font-size:34px;
+      letter-spacing:0.3px;
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
-
-    .container:hover {
-      transform: translateY(-5px);
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 26px;
-      background: linear-gradient(90deg, #007bff, #00c6ff);
+    .logo .pill {
+      width:56px;height:56px;border-radius:12px;
+      background:rgba(255,255,255,0.14);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow: inset 0 -4px 10px rgba(255,255,255,0.06);
+      font-weight:700;
+      font-size:18px;
       -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+    }
+    .tag {opacity:0.95; color: rgba(255,255,255,0.92); font-size:16px; max-width:480px; line-height:1.45;}
+    .left-illus {
+      position:absolute; right: -80px; bottom:-40px; width:420px; height:420px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), transparent 12%),
+                  radial-gradient(circle at 70% 70%, rgba(255,255,255,0.06), transparent 10%);
+      transform: rotate(-8deg);
+      filter: blur(6px);
     }
 
-    p {
-      text-align: center;
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 20px;
+    /* Right card */
+    .right {
+      padding:40px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,250,0.95));
     }
 
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    .card {
+      width:100%;
+      max-width:360px;
+      background: white;
+      border-radius:14px;
+      padding:28px;
+      box-shadow: var(--card-shadow);
     }
 
-    input[type="email"]:focus,
-    input[type="password"]:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-      outline: none;
+    .toggle {
+      display:flex;
+      gap:8px;
+      background: #f3f4f6;
+      padding:6px;
+      border-radius:999px;
+      width:max-content;
+      margin:0 auto 20px;
     }
 
-    button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 15px;
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.3s ease;
+    .toggle button {
+      background:transparent;
+      border:0;
+      padding:8px 16px;
+      font-weight:600;
+      color:var(--muted);
+      border-radius:999px;
+      cursor:pointer;
+      transition:all .18s ease;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    .toggle button.active {
+      background:linear-gradient(90deg,var(--blue-1),var(--blue-2));
+      color:white;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.08);
     }
 
+    .title { text-align:center; font-size:20px; margin-bottom:6px; font-weight:700; color:#111827; }
+    .subtitle { text-align:center; font-size:13px; color:var(--muted); margin-bottom:18px; }
+
+    .form-group { margin-bottom:12px; }
+    label { display:block; font-size:13px; color:#374151; margin-bottom:6px; font-weight:600; }
+    input[type="email"], input[type="password"], input[type="text"] {
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid #e6e7eb;
+      font-size:14px;
+      outline:none;
+      transition:box-shadow .12s, border-color .12s;
+    }
+    input:focus { border-color:var(--blue-1); box-shadow:0 6px 20px rgba(3,102,214,0.06); }
+
+    .primary {
+      margin-top:10px;
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:0;
+      font-weight:700;
+      background: linear-gradient(90deg,var(--blue-1),var(--blue-2));
+      color:white;
+      cursor:pointer;
+      box-shadow: 0 10px 30px rgba(3,102,214,0.12);
+    }
+
+    .secondary {
+      margin-top:8px;
+      width:100%;
+      padding:10px;
+      background:transparent;
+      border:1px solid #e6e7eb;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
+    .low { font-size:13px; color:var(--muted); text-align:center; margin-top:12px; }
+
+    .link { color:var(--blue-1); font-weight:600; cursor:pointer; text-decoration:underline; }
+
+    /* Modal */
+    .modal-backdrop {
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+      background: rgba(8,15,30,0.35); z-index:60;
+    }
+    .modal {
+      width:100%;
+      max-width:520px;
+      background: rgba(255,255,255,0.9);
+      border-radius:14px;
+      padding:22px;
+      box-shadow: 0 20px 60px rgba(2,6,23,0.2);
+      backdrop-filter: blur(6px);
+    }
+    .modal .row { display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+    .close-btn { float:right; cursor:pointer; font-weight:600; color:var(--muted); border:0;background:none; }
+
+    /* Toast + loader */
     .toast {
-      position: fixed;
-      top: 30px;
-      right: 30px;
-      background-color: #323232;
-      color: #fff;
-      padding: 14px 20px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      opacity: 0;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      transform: translateY(-20px);
-      z-index: 9999;
+      position:fixed; right:26px; top:26px; background:#111827; color:white; padding:12px 16px;
+      border-radius:10px; opacity:0; transform:translateY(-8px); transition:all .28s ease; z-index:70;
+      pointer-events:none;
     }
+    .toast.show { opacity:1; transform:translateY(0); pointer-events:auto; }
 
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
+    .loader {
+      display:inline-block;
+      width:18px;height:18px;border-radius:50%;
+      border:3px solid rgba(255,255,255,0.2); border-top-color:white;
+      animation:spin 0.85s linear infinite;
+      vertical-align:middle; margin-right:8px;
     }
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    @media (max-width: 768px) {
-      .wrapper {
-        flex-direction: column;
-        align-items: center;
-      }
+    /* Responsive */
+    @media (max-width:920px){
+      .shell{grid-template-columns:1fr; height:auto; padding-bottom:40px}
+      .left{height:220px;padding:26px}
+      .left-illus{display:none}
+      .right{padding:30px}
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <!-- User Login Box -->
-    <div class="container" id="userLoginBox">
-      <h2>User Login 💊</h2>
-      <p>"Stay healthy. Stay consistent."</p>
-      <input type="email" id="userEmail" placeholder="Enter User Email" />
-      <input type="password" id="userPassword" placeholder="Enter Password" />
-      <button onclick="login('user')">Login as User</button>
+
+  <div class="shell" role="main" aria-labelledby="mainheading">
+    <div class="left" aria-hidden="false">
+      <div class="logo"><div class="pill">DM</div>DoseMate</div>
+      <div class="tag">Your smart medicine companion — schedule reminders, manage refills and never miss a dose.</div>
+      <div class="left-illus" aria-hidden="true"></div>
     </div>
 
-    <!-- Admin Login Box -->
-    <div class="container" id="adminLoginBox">
-      <h2>Admin Login 🔑</h2>
-      <p>"Manage users and reminders efficiently."</p>
-      <input type="email" id="adminEmail" placeholder="Enter Admin Email" />
-      <input type="password" id="adminPassword" placeholder="Enter Password" />
-      <button onclick="login('admin')">Login as Admin</button>
+    <div class="right">
+      <div class="card" role="form" aria-labelledby="formheading">
+        <div class="toggle" role="tablist" aria-label="Login type">
+          <button id="toggle-user" class="active" role="tab" aria-selected="true">User</button>
+          <button id="toggle-admin" role="tab" aria-selected="false">Admin</button>
+        </div>
+
+        <div id="login-area">
+          <div class="title" id="formheading">Welcome back</div>
+          <div class="subtitle" id="subtitle">Login to continue</div>
+
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" autocomplete="current-password" />
+          </div>
+
+          <button id="loginBtn" class="primary" aria-live="polite">Login</button>
+          <button id="guestBtn" class="secondary" title="Demo (no network)?" style="display:none">Demo</button>
+
+          <div class="low">
+            New user? <span id="openSignup" class="link">Sign up</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <!-- Signup Modal -->
+  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <button class="close-btn" id="closeModal" aria-label="Close signup">✕</button>
+      <h3 style="margin-top:6px;margin-bottom:8px">Create new account</h3>
+      <p style="margin:0 0 14px;color:var(--muted)">Sign up as a DoseMate user. Admins are created on the server.</p>
 
-  <script>
-    const BASE_URL = "https://medicinereminder-4vsg.onrender.com/api";
+      <div class="row">
+        <div>
+          <label for="signupName">Full name</label>
+          <input id="signupName" type="text" autocomplete="name" />
+        </div>
+        <div>
+          <label for="signupPhone">Phone</label>
+          <input id="signupPhone" type="text" inputmode="tel" />
+        </div>
+      </div>
 
-    function showToast(message, duration = 3000) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
+      <div style="margin-top:12px">
+        <label for="signupEmail">Email</label>
+        <input id="signupEmail" type="email" autocomplete="email" />
+      </div>
+
+      <div style="margin-top:12px">
+        <label for="signupPassword">Password</label>
+        <input id="signupPassword" type="password" autocomplete="new-password" />
+      </div>
+
+      <div style="margin-top:14px; display:flex; gap:10px;">
+        <button id="signupBtn" class="primary">Create account</button>
+        <button id="cancelSignup" class="secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // CONFIG
+  const BASE_URL = "https://medicinereminder-4vsg.onrender.com/api";
+
+  // UI refs
+  const btnUser = document.getElementById('toggle-user');
+  const btnAdmin = document.getElementById('toggle-admin');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPassword = document.getElementById('loginPassword');
+  const subtitle = document.getElementById('subtitle');
+
+  const modalBackdrop = document.getElementById('modalBackdrop');
+  const openSignup = document.getElementById('openSignup');
+  const closeModal = document.getElementById('closeModal');
+  const cancelSignup = document.getElementById('cancelSignup');
+  const signupBtn = document.getElementById('signupBtn');
+
+  const signupName = document.getElementById('signupName');
+  const signupPhone = document.getElementById('signupPhone');
+  const signupEmail = document.getElementById('signupEmail');
+  const signupPassword = document.getElementById('signupPassword');
+
+  const toast = document.getElementById('toast');
+
+  let currentRole = 'user'; // 'user' or 'admin'
+
+  // Helpers: toast + spinner
+  function showToast(message, options = {}) {
+    const { loading=false, duration=2500 } = options;
+    toast.innerHTML = '';
+    if (loading) {
+      const loader = document.createElement('span');
+      loader.className = 'loader';
+      toast.appendChild(loader);
+      const txt = document.createElement('span'); txt.textContent = ' ' + message;
+      toast.appendChild(txt);
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), duration);
+      return;
     }
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(()=> toast.classList.remove('show'), duration);
+  }
 
-    async function login(roleType) {
-      const email = document.getElementById(roleType === 'user' ? 'userEmail' : 'adminEmail').value;
-      const password = document.getElementById(roleType === 'user' ? 'userPassword' : 'adminPassword').value;
+  function setToggle(role) {
+    currentRole = role;
+    if (role === 'user') {
+      btnUser.classList.add('active'); btnAdmin.classList.remove('active');
+      subtitle.textContent = "Login to your DoseMate account";
+    } else {
+      btnAdmin.classList.add('active'); btnUser.classList.remove('active');
+      subtitle.textContent = "Admin panel login";
+    }
+  }
 
-      if (!email || !password) {
-        showToast("Please fill in all fields!");
+  // Toggle buttons
+  btnUser.addEventListener('click', ()=> setToggle('user'));
+  btnAdmin.addEventListener('click', ()=> setToggle('admin'));
+
+  // Modal open/close
+  openSignup.addEventListener('click', ()=> {
+    modalBackdrop.style.display = 'flex';
+    modalBackdrop.setAttribute('aria-hidden', 'false');
+    signupName.focus();
+  });
+  function closeSignupModal() {
+    modalBackdrop.style.display = 'none';
+    modalBackdrop.setAttribute('aria-hidden', 'true');
+  }
+  closeModal.addEventListener('click', closeSignupModal);
+  cancelSignup.addEventListener('click', closeSignupModal);
+  modalBackdrop.addEventListener('click', (e)=> { if(e.target===modalBackdrop) closeSignupModal(); });
+
+  // Network helpers
+  async function postJSON(url, body) {
+    showToast('Please wait...', {loading:true});
+    try {
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Server error');
+      }
+      showToast('Done', {duration:900});
+      return data;
+    } catch (err) {
+      showToast(err.message || 'Network error', {duration:4000});
+      throw err;
+    }
+  }
+
+  // Login flow
+  loginBtn.addEventListener('click', async ()=> {
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value;
+    if (!email || !password) { showToast('Fill email & password'); return; }
+
+    try {
+      showToast('Signing in...', {loading:true});
+      const data = await postJSON(`${BASE_URL}/auth/login`, { email, password });
+
+      // strict role check
+      if (currentRole === 'user' && data.role !== 'user') {
+        showToast('This is an admin account — use Admin login.', {duration:4000});
+        return;
+      }
+      if (currentRole === 'admin' && data.role !== 'admin') {
+        showToast('This is a user account — use User login.', {duration:4000});
         return;
       }
 
-      try {
-        const res = await fetch(`${BASE_URL}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
+      // store token & redirect
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('role', data.role);
+      showToast('Login successful!', {duration:900});
+      setTimeout(()=> {
+        if (data.role === 'admin') window.location.href = 'admin.html';
+        else window.location.href = 'dashboard.html';
+      }, 900);
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Login failed");
-
-        // ✅ Role Verification
-        if (roleType === "user" && data.role !== "user") {
-          throw new Error("This is an admin account. Please login using the Admin panel.");
-        }
-
-        if (roleType === "admin" && data.role !== "admin") {
-          throw new Error("This is a user account. Please login using the User panel.");
-        }
-
-        // ✅ Save Token and Role
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.role);
-        showToast("Login successful!");
-
-        // ✅ Redirect Properly
-        setTimeout(() => {
-          if (data.role === "admin") {
-            window.location.href = "admin.html";
-          } else {
-            window.location.href = "dashboard.html";
-          }
-        }, 1000);
-
-      } catch (error) {
-        showToast(error.message);
-      }
+    } catch (err) {
+      // postJSON already showed toast
     }
-  </script>
+  });
+
+  // Signup flow (user-only)
+  signupBtn.addEventListener('click', async ()=> {
+    const name = signupName.value.trim();
+    const phone = signupPhone.value.trim();
+    const email = signupEmail.value.trim();
+    const password = signupPassword.value;
+
+    if (!name || !email || !password) { showToast('Please fill name, email & password'); return; }
+    try {
+      // send role=user explicitly
+      await postJSON(`${BASE_URL}/auth/register`, { name, email, password, phone, role: 'user' });
+      showToast('Signup successful! Please login as User.', {duration:2500});
+      // clear form & close modal after short delay
+      signupName.value=''; signupPhone.value=''; signupEmail.value=''; signupPassword.value='';
+      setTimeout(()=> {
+        closeSignupModal();
+        setToggle('user');
+        loginEmail.value = email;
+        loginPassword.value = '';
+        loginEmail.focus();
+      }, 900);
+    } catch (err) {
+      // error shown
+    }
+  });
+
+  // small accessibility: enter key in login fields triggers login
+  [loginEmail, loginPassword].forEach(el => {
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+  });
+  [signupName, signupPhone, signupEmail, signupPassword].forEach(el=>{
+    el.addEventListener('keydown', (e)=> { if (e.key==='Enter') signupBtn.click(); });
+  });
+
+  // initial state
+  setToggle('user');
+
+  // If you want to test quickly when backend sleeps: uncomment guestBtn code
+  // (left intentionally hidden in UI)
+</script>
 </body>
 </html>
