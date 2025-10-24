@@ -1,288 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>DoseMate - Profile</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
-<style>
-    /* Basic Styles for Layout */
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
-    body { background: linear-gradient(135deg, #e0f7fa, #fff3e0); min-height: 100vh; display: flex; }
-    .sidebar {
-        width: 250px; background-color: #263238; color: white; padding: 30px 20px; 
-        display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        position: fixed; top: 0; bottom: 0;
-    }
-    .logo {
-        font-size: 28px; font-weight: 700; margin-bottom: 40px;
-        background: linear-gradient(to right, #4fc3f7, #81c784);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.3); background-clip: text;
-    }
-    .sidebar a {
-        color: white; text-decoration: none; margin: 15px 0; font-size: 18px;
-        transition: 0.3s ease; display: block;
-    }
-    .sidebar a:hover { color: #81c784; }
-    .main { flex: 1; margin-left: 250px; padding: 30px; position: relative; overflow-y: auto; }
-    .header-info { text-align: center; margin-bottom: 20px; }
-    /* Profile Card specific styles */
-    .profile-container {
-        width: 100%; max-width: 800px; margin: 0 auto; display: grid; gap: 25px;
-    }
-    .profile-card {
-        background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    }
-    .profile-card h3, .profile-card h4 {
-        color: #333; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;
-    }
-    .profile-info { display: flex; align-items: center; margin-bottom: 25px; gap: 20px; }
-    .profile-avatar {
-        width: 80px; height: 80px; background-color: #e0f7fa; border-radius: 50%;
-        display: flex; justify-content: center; align-items: center; font-size: 40px; color: #4fc3f7;
-    }
-    .profile-details h2 { font-size: 24px; font-weight: 700; color: #263238; }
-    .profile-details p { font-size: 16px; color: #777; }
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; font-size: 16px; font-weight: 500; color: #555; margin-bottom: 5px; }
-    .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
-    .form-group input:disabled, .form-group select:disabled { background-color: #f0f0f0; color: #888; }
-    .button-group { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-    .button-group button {
-        padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px;
-        cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-    .button-group .edit-btn { background-color: #007bff; color: #fff; }
-    .button-group .edit-btn:hover { background-color: #0056b3; transform: translateY(-2px); }
-    .button-group .save-btn { background-color: #4caf50; color: #fff; }
-    .button-group .save-btn:hover { background-color: #388e3c; transform: translateY(-2px); }
-    .delete-btn {
-        background-color: #f44336; color: #fff; padding: 12px 20px; border: none;
-        border-radius: 8px; font-size: 16px; cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        width: auto; margin-top: 20px;
-    }
-    .delete-btn:hover { background-color: #d32f2f; transform: translateY(-2px); }
-    .toast {
-        position: fixed; top: 30px; right: 30px; background-color: #323232; color: #fff;
-        padding: 14px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        opacity: 0; transition: opacity 0.5s ease, transform 0.5s ease; transform: translateY(-20px);
-        z-index: 9999;
-    }
-    .toast.show { opacity: 1; transform: translateY(0); }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>DoseMate - Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic Styles for Layout */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+        body { background: linear-gradient(135deg, #e0f7fa, #fff3e0); min-height: 100vh; display: flex; }
+        .sidebar {
+            width: 250px; background-color: #263238; color: white; padding: 30px 20px; 
+            display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed; top: 0; bottom: 0;
+        }
+        .logo {
+            font-size: 28px; font-weight: 700; margin-bottom: 40px;
+            background: linear-gradient(to right, #4fc3f7, #81c784);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3); background-clip: text;
+        }
+        .sidebar a {
+            color: white; text-decoration: none; margin: 15px 0; font-size: 18px;
+            transition: 0.3s ease; display: block;
+        }
+        .sidebar a:hover { color: #81c784; }
+        .main { flex: 1; margin-left: 250px; padding: 30px; position: relative; overflow-y: auto; }
+        .header-info { text-align: center; margin-bottom: 20px; }
+        /* Profile Card specific styles */
+        .profile-container {
+            width: 100%; max-width: 800px; margin: 0 auto; display: grid; gap: 25px;
+        }
+        .profile-card {
+            background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        .profile-card h3, .profile-card h4 {
+            color: #333; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;
+        }
+        .profile-info { display: flex; align-items: center; margin-bottom: 25px; gap: 20px; }
+        .profile-avatar {
+            width: 80px; height: 80px; background-color: #e0f7fa; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 40px; color: #4fc3f7;
+        }
+        .profile-details h2 { font-size: 24px; font-weight: 700; color: #263238; }
+        .profile-details p { font-size: 16px; color: #777; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 16px; font-weight: 500; color: #555; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        .form-group input:disabled, .form-group select:disabled { background-color: #f0f0f0; color: #888; }
+        .button-group { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .button-group button {
+            padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px;
+            cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .button-group .edit-btn { background-color: #007bff; color: #fff; }
+        .button-group .edit-btn:hover { background-color: #0056b3; transform: translateY(-2px); }
+        .button-group .save-btn { background-color: #4caf50; color: #fff; }
+        .button-group .save-btn:hover { background-color: #388e3c; transform: translateY(-2px); }
+        .delete-btn {
+            background-color: #f44336; color: #fff; padding: 12px 20px; border: none;
+            border-radius: 8px; font-size: 16px; cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: auto; margin-top: 20px;
+        }
+        .delete-btn:hover { background-color: #d32f2f; transform: translateY(-2px); }
+        .toast {
+            position: fixed; top: 30px; right: 30px; background-color: #323232; color: #fff;
+            padding: 14px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0; transition: opacity 0.5s ease, transform 0.5s ease; transform: translateY(-20px);
+            z-index: 9999;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+    </style>
 </head>
 <body>
-<div class="sidebar">
-    <div class="logo">DoseMate 💊</div>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="medicines.html">Your Medicines</a>
-    <a href="reminders.html">Reminders</a>
-    <a href="refill.html">Refill Alerts</a>
-    <a href="profile.html">Profile</a>
-    <a href="#" onclick="logout()">Logout</a>
-</div>
+    <div class="sidebar">
+        <div class="logo">DoseMate 💊</div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="medicines.html">Your Medicines</a>
+        <a href="reminders.html">Reminders</a>
+        <a href="refill.html">Refill Alerts</a>
+        <a href="profile.html">Profile</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
 
-<div class="main">
-    <div class="profile-container">
-        <div class="profile-card">
-            <h3>User Information</h3>
-            <div class="profile-info">
-                <div class="profile-avatar"><span id="profileInitials"></span></div>
-                <div class="profile-details">
-                    <h2 id="displayNameDisplay">Loading...</h2>
-                    <p id="emailDisplay">Loading...</p>
-                    <p id="phoneNumberDisplay">Mobile: Not Set</p>
+    <div class="main">
+        <div class="profile-container">
+            <div class="profile-card">
+                <h3>User Information</h3>
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <span id="profileInitials"></span>
+                    </div>
+                    <div class="profile-details">
+                        <h2 id="displayNameDisplay">Loading...</h2>
+                        <p id="emailDisplay">Loading...</p>
+                        <p id="phoneNumberDisplay">Mobile: Not Set</p>
+                    </div>
                 </div>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="displayName">Edit Name:</label>
+                        <input type="text" id="displayName" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Mobile Number:</label>
+                        <input type="tel" id="phoneNumber" placeholder="e.g., +919876543210" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age:</label>
+                        <input type="number" id="age" placeholder="e.g., 30" min="1" max="150" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="sex">Sex:</label>
+                        <select id="sex" disabled>
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="edit-btn" id="editBtn" onclick="toggleEditMode()">Edit Profile</button>
+                        <button type="button" class="save-btn" id="saveBtn" style="display:none;" onclick="saveProfile()">Save Changes</button>
+                    </div>
+                </form>
             </div>
-            <form id="profileForm">
-                <div class="form-group">
-                    <label for="displayName">Edit Name:</label>
-                    <input type="text" id="displayName" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="phoneNumber">Mobile Number:</label>
-                    <input type="tel" id="phoneNumber" placeholder="e.g., +919876543210" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="age">Age:</label>
-                    <input type="number" id="age" placeholder="e.g., 30" min="1" max="150" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="sex">Sex:</label>
-                    <select id="sex" disabled>
-                        <option value="">Select</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="edit-btn" id="editBtn" onclick="toggleEditMode()">Edit Profile</button>
-                    <button type="button" class="save-btn" id="saveBtn" style="display:none;" onclick="saveProfile()">Save Changes</button>
-                </div>
-            </form>
-        </div>
 
-        <div class="profile-card">
-            <h3>Change Password</h3>
-            <form id="passwordForm">
-                <div class="form-group">
-                    <label for="newPassword">New Password:</label>
-                    <input type="password" id="newPassword" placeholder="Enter new password">
-                </div>
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password:</label>
-                    <input type="password" id="confirmPassword" placeholder="Confirm new password">
-                </div>
-                <div class="button-group">
-                    <button type="button" class="save-btn" onclick="changePassword()">Change Password</button>
-                </div>
-            </form>
-        </div>
+            <div class="profile-card">
+                <h3>Change Password</h3>
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label for="newPassword">New Password:</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="save-btn" onclick="changePassword()">Change Password</button>
+                    </div>
+                </form>
+            </div>
 
-        <div class="profile-card">
-            <h4>Danger Zone</h4>
-            <p>Permanently delete your account and all associated data.</p>
-            <button type="button" class="delete-btn" onclick="deleteAccount()">Delete Account</button>
+            <div class="profile-card">
+                <h4>Danger Zone</h4>
+                <p>Permanently delete your account and all associated data.</p>
+                <button type="button" class="delete-btn" onclick="deleteAccount()">Delete Account</button>
+            </div>
         </div>
     </div>
-</div>
+    <div class="toast" id="toast"></div>
 
-<div class="toast" id="toast"></div>
+    <script>
+        const BASE_URL = "https://medicinereminder-4vsg.onrender.com/api";
+        const displayNameInput = document.getElementById("displayName");
+        const phoneNumberInput = document.getElementById("phoneNumber");
+        const ageInput = document.getElementById("age");
+        const sexInput = document.getElementById("sex");
+        const profileInitials = document.getElementById("profileInitials");
+        const displayNameDisplay = document.getElementById("displayNameDisplay");
+        const emailDisplay = document.getElementById("emailDisplay");
+        const phoneNumberDisplay = document.getElementById("phoneNumberDisplay");
+        const editBtn = document.getElementById("editBtn");
+        const saveBtn = document.getElementById("saveBtn");
+        const newPasswordInput = document.getElementById("newPassword");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
 
-<script>
-const BASE_URL = "https://medicinereminder-4vsg.onrender.com/api";
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, duration);
+        }
 
-const displayNameInput = document.getElementById("displayName");
-const phoneNumberInput = document.getElementById("phoneNumber");
-const ageInput = document.getElementById("age");
-const sexInput = document.getElementById("sex");
-const profileInitials = document.getElementById("profileInitials");
-const displayNameDisplay = document.getElementById("displayNameDisplay");
-const emailDisplay = document.getElementById("emailDisplay");
-const phoneNumberDisplay = document.getElementById("phoneNumberDisplay");
-const editBtn = document.getElementById("editBtn");
-const saveBtn = document.getElementById("saveBtn");
-const newPasswordInput = document.getElementById("newPassword");
-const confirmPasswordInput = document.getElementById("confirmPassword");
+        window.onload = async () => {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            if (!token || role !== 'user') {
+                window.location.href = "index.html";
+                return;
+            }
+            await fetchProfile();
+        };
 
-function showToast(message, duration = 3000){
-    const toast = document.getElementById('toast');
-    if(!toast) return;
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(()=>{ toast.classList.remove('show'); }, duration);
-}
+        async function fetchProfile() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${BASE_URL}/profile`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const user = await res.json();
+                if (!res.ok) throw new Error(user.message || "Failed to fetch profile.");
+                
+                displayNameInput.value = user.name || '';
+                phoneNumberInput.value = user.phoneNumber || '';
+                ageInput.value = user.age || '';
+                sexInput.value = user.sex || '';
 
-window.onload = async () => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    if(!token || role !== 'user'){ window.location.href = "index.html"; return; }
-    await fetchProfile();
-};
+                displayNameDisplay.textContent = user.name || 'User';
+                emailDisplay.textContent = user.email || 'No Email';
+                phoneNumberDisplay.textContent = user.phoneNumber ? `Mobile: ${user.phoneNumber}` : "Mobile: Not Set";
 
-async function fetchProfile(){
-    const token = localStorage.getItem('token');
-    try{
-        const res = await fetch(`${BASE_URL}/profile`, { method:'GET', headers:{ 'Authorization': `Bearer ${token}` }});
-        const user = await res.json();
-        if(!res.ok) throw new Error(user.message || "Failed to fetch profile.");
+                const initials = (user.name || user.email || 'U').split(' ').map(n => n[0]).join('').toUpperCase();
+                profileInitials.textContent = initials.substring(0, 2);
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+                showToast("Error fetching profile. Please try again.");
+            }
+        }
+        
+        window.toggleEditMode = () => {
+            const isEditing = displayNameInput.disabled;
+            displayNameInput.disabled = !isEditing;
+            phoneNumberInput.disabled = !isEditing;
+            ageInput.disabled = !isEditing;
+            sexInput.disabled = !isEditing;
+            editBtn.style.display = isEditing ? "none" : "block";
+            saveBtn.style.display = isEditing ? "block" : "none";
+        };
 
-        displayNameInput.value = user.name || '';
-        phoneNumberInput.value = user.phoneNumber || '';
-        ageInput.value = user.age || '';
-        sexInput.value = user.sex || '';
+        window.saveProfile = async () => {
+            const newName = displayNameInput.value;
+            let newPhoneNumber = phoneNumberInput.value;
+            const newAge = ageInput.value;
+            const newSex = sexInput.value;
+            const token = localStorage.getItem('token');
 
-        displayNameDisplay.textContent = user.name || 'User';
-        emailDisplay.textContent = user.email || 'No Email';
-        phoneNumberDisplay.textContent = user.phoneNumber ? `Mobile: ${user.phoneNumber}` : "Mobile: Not Set";
+            if (!newPhoneNumber) { showToast("Mobile number is required for SMS reminders."); return; }
+            
+            // ✅ Fix: Add the +91 country code if it's not present
+            if (!newPhoneNumber.startsWith('+')) {
+                newPhoneNumber = `+91${newPhoneNumber}`;
+            }
 
-        const initials = (user.name || user.email || 'U').split(' ').map(n => n[0]).join('').toUpperCase();
-        profileInitials.textContent = initials.substring(0,2);
-    } catch(err){
-        console.error(err);
-        showToast("Error fetching profile.");
-    }
-}
+            try {
+                const res = await fetch(`${BASE_URL}/profile`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ name: newName, phoneNumber: newPhoneNumber, age: newAge, sex: newSex })
+                });
+                if (!res.ok) throw new Error((await res.json()).message || "Failed to update profile.");
+                
+                showToast("Profile updated successfully!");
+                await fetchProfile();
+                toggleEditMode();
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                showToast(error.message);
+            }
+        };
 
-window.toggleEditMode = () => {
-    const isEditing = displayNameInput.disabled;
-    displayNameInput.disabled = !isEditing;
-    phoneNumberInput.disabled = !isEditing;
-    ageInput.disabled = !isEditing;
-    sexInput.disabled = !isEditing;
-    editBtn.style.display = isEditing ? "none" : "block";
-    saveBtn.style.display = isEditing ? "block" : "none";
-};
+        window.changePassword = async () => {
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            if (newPassword !== confirmPassword) { showToast("Passwords do not match!"); return; }
+            if (newPassword.length < 6) { showToast("Password must be at least 6 characters long."); return; }
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${BASE_URL}/profile/password`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ newPassword })
+                });
+                if (!res.ok) throw new Error((await res.json()).message || "Failed to update password.");
+                showToast("Password updated successfully!");
+                newPasswordInput.value = "";
+                confirmPasswordInput.value = "";
+            } catch (error) {
+                console.error("Error updating password:", error);
+                showToast(error.message);
+            }
+        };
 
-window.saveProfile = async () => {
-    const newName = displayNameInput.value;
-    let newPhoneNumber = phoneNumberInput.value;
-    const newAge = ageInput.value;
-    const newSex = sexInput.value;
-    const token = localStorage.getItem('token');
+        window.deleteAccount = async () => {
+            if (!confirm("Are you sure you want to permanently delete your account? This action cannot be undone.")) return;
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${BASE_URL}/profile`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error((await res.json()).message || "Failed to delete account.");
+                showToast("Account successfully deleted.");
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+                window.location.href = "index.html";
+            } catch (error) {
+                console.error("Error deleting account:", error);
+                showToast(error.message);
+            }
+        };
 
-    if(!newPhoneNumber){ showToast("Mobile number is required."); return; }
-    if(!newPhoneNumber.startsWith('+')) newPhoneNumber = `+91${newPhoneNumber}`;
-
-    try{
-        const res = await fetch(`${BASE_URL}/profile`,{
-            method:'PUT',
-            headers:{ 'Content-Type':'application/json','Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ name:newName, phoneNumber:newPhoneNumber, age:newAge, sex:newSex })
-        });
-        if(!res.ok) throw new Error((await res.json()).message || "Failed to update profile.");
-        showToast("Profile updated successfully!");
-        await fetchProfile();
-        toggleEditMode();
-    } catch(err){
-        console.error(err);
-        showToast(err.message);
-    }
-};
-
-window.changePassword = async () => {
-    const newPassword = newPasswordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
-    if(newPassword !== confirmPassword){ showToast("Passwords do not match!"); return; }
-    if(newPassword.length < 6){ showToast("Password must be at least 6 characters."); return; }
-    const token = localStorage.getItem('token');
-    try{
-        const res = await fetch(`${BASE_URL}/profile/password`, {
-            method:'PUT',
-            headers:{ 'Content-Type':'application/json','Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ newPassword })
-        });
-        if(!res.ok) throw new Error((await res.json()).message || "Failed to update password.");
-        showToast("Password updated successfully!");
-        newPasswordInput.value = ""; confirmPasswordInput.value = "";
-    } catch(err){
-        console.error(err);
-        showToast(err.message);
-    }
-};
-
-window.deleteAccount = async () => {
-    if(!confirm("Are you sure you want to permanently delete your account?")) return;
-    const token = localStorage.getItem('token');
-    try{
-        const res = await fetch(`${BASE_URL}/profile`, { method:'DELETE', headers:{ 'Authorization': `Bearer ${token}` }});
-        if(!res.ok) throw new Error((await res.json()).message || "Failed to delete account.");
-        showToast("Account deleted.");
-        localStorage.removeItem('token'); localStorage.removeItem('role');
-        window.location.href = "index.html";
-    } catch(err){
-        console.error(err);
-        showToast(err.message);
-    }
-};
-
-window.logout = () => {
-    localStorage.removeItem('token'); localStorage.removeItem('role');
-    window.location.href = "index.html";
-};
-</script>
+        window.logout = () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            window.location.href = "index.html";
+        };
+    </script>
 </body>
 </html>
